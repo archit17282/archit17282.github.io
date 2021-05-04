@@ -1,0 +1,542 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.2/brython.js" integrity="sha512-r3jusgw6GvLxxpcNNRWeY9hlRg8+KDSjsphlV4fPHCGlLV1ZA4NtSR80RcPB7C5680S2cJ6ge56jXGFLeag5FA==" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.2/brython_stdlib.min.js" integrity="sha512-JJ4ZmaIr9EoCSB5XQBafIuJ8ucSeg9UxAWhYpecDk4kC3azdP028eKKnXHLy/8KKg9zp77tjHCwTyJZoRl0vqg==" crossorigin="anonymous"></script>
+
+<title> Vaccine Slots </title>
+
+</head>
+
+<body onload="brython()">
+
+  <h1>Vaccine Slots</h1>
+
+
+  <audio
+           id="p2"
+
+           src="https://soundbible.com/mp3/Tyrannosaurus%20Rex%20Roar-SoundBible.com-807702404.mp3">
+
+
+      Your browser does not support the <code>audio</code> element.
+    </audio>
+
+
+
+
+        </div>
+  <h2 id="hello">Search with Age and Pincode </h2>
+
+
+  <input type="number" id="pincode" placeholder="Pincode">
+  <input type="number" id="age" placeholder="Age">
+  <button id="alert-btn" type="button" name="button"> Search </button>
+
+  <button id="alert-btn2" type="button" name="button"> Stop </button>
+
+
+
+ <br>
+ <br>
+ <br>
+ <br>
+
+<h2 id="hello2">Search with City and District_name </h2>
+ <input type="text" id="city" placeholder="City">
+ <input type="text" id="district" placeholder="District_Name">
+ <input type="number" id="age_2" placeholder="Age">
+ <button id="city_s" type="button" name="button"> Search </button>
+ <button id="city_st" type="button" name="button"> Stop </button>
+
+ <br>
+ <br>
+  <textarea id="joke" cols="100" rows="100"></textarea>
+
+    <span id="output"></span>
+
+    <div>
+        <a href="#" onclick="document.getElementById('p2').play()">Play 1</a>
+        <a href="#" onclick="document.getElementById('p2').play()">Play 2</a>
+        <a href="#" onclick="document.getElementById('p2').play()">Play 3</a>
+        <a href="#" onclick="document.getElementById('p2').play()">Play 4</a>
+      </div>
+
+
+
+<! -- Pincode -->
+  <script type="text/python" id="script0">
+        from browser import document, console, alert,timer
+        from browser import  ajax
+
+
+
+
+        from datetime import date
+        from time import sleep
+
+        import sys
+        import os
+        from time import sleep
+
+
+
+        stat=True
+
+
+
+
+        def on_complete(req):
+            import json
+
+
+            stat=int(req.status)
+
+
+
+            if(stat!=200):
+             document['joke'].text = "Please enter correct data"
+
+            Age=int(document['age'].value)
+
+            data = json.loads(req.responseText)
+
+
+            centers = data['centers']
+            result = []
+
+
+
+            result=[]
+            coun=len(centers)
+
+
+
+
+            result2=[]
+
+
+            for st1 in range(coun):
+                  console.log(st1)
+
+                  center=centers[st1]
+                  center_name = center['name']
+                  centre_pincode = center['pincode']
+                  district_name = center['district_name']
+                  block_name = center['block_name']
+                  centre_fee = center['fee_type']
+                  sessions = center['sessions']
+
+                  result.append(center_name)
+                  temp_result=[]
+
+
+                  for session in sessions:
+                          available_capacity = int(session['available_capacity'])
+                          if available_capacity == 0:
+                                    continue
+
+
+                          session_age = int(session['min_age_limit'])
+                          if(int(session_age)>=int(Age)):
+                           continue
+
+
+
+                          result.append(available_capacity)
+
+
+                          session_date = session['date']
+
+                          session_vaccine = session['vaccine']
+
+                          result.append(session_date)
+
+                          if session_vaccine == '':
+                                    session_vaccine = 'unknown'
+
+
+
+                          row = (available_capacity, session_age,
+                                     session_date, session_vaccine)
+                          temp_result.append(row)
+                  if temp_result != []:
+                              address = (center_name, centre_pincode,
+                                         district_name, block_name, centre_fee)
+                              row = (address, temp_result)
+                              result2.append(row)
+
+
+            if result2 == []:
+                    document['joke'].text = "Sorry no slots Available"
+            else :
+
+                   str="CENTER DETAILS\n"
+                   str11=""
+                   console.log(len(result2))
+                   for row in result2:
+
+                    address = row[0]
+                    sessions = row[1]
+                    str2="Center Name - {}\nCenter Pin Code - {}\nDistrict - {}\nBlock - {}\nCentre Fee - {}\n".format(*address)
+                    str3="Printing Sessions for this center:\n"
+                    str1=""
+                    for session in sessions:
+                      str4="For"+session[2]+"\t"
+
+                      str5="{} doses available with minimum age {} and vaccine {}".format(
+                               session[0], session[1], session[3])+"\n"
+                      str1=str1+str2+str3+str4+str5+"\n"
+                    str11=str11+str1
+                    console.log(str11)
+
+
+                   document['joke'].text = str+"\n"+str11+"\n"
+
+
+
+
+
+                   global _timer
+                   timer.clear_interval(_timer)
+
+
+
+                   document['p2'].play()
+
+
+
+
+        def show():
+
+
+            Age=document['age'].value
+            Pincode=document['pincode'].value
+            today = date.today()
+            cowin_date = "{}-{}-{}".format(today.day, today.month, today.year)
+            static_data = (cowin_date, Age)
+            URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?"
+            curr="pincode="+Pincode+"&"+"date="+cowin_date
+            PARAMS = {'pincode': Pincode, 'date': cowin_date}
+
+
+            UR=URL+curr
+
+
+            req = ajax.ajax()
+            req.open('GET', UR, True)
+            req.bind('complete', on_complete)
+            document['joke'].text = 'Loading...'
+            req.send()
+
+
+            console.log(static_data)
+
+
+
+        def curr(e):
+          global _timer
+          show()
+
+          _timer = timer.set_interval(show,100000)
+
+
+        def curr2(e):
+          global _timer
+          timer.clear_interval(_timer)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        document['alert-btn'].bind('click', curr)
+        document['alert-btn2'].bind('click', curr2)
+
+
+    </script>
+
+
+
+<! -- City and district Name -->
+
+    <script type="text/python" id="script1">
+
+      from browser import document, console, alert,timer
+      from browser import  ajax
+      from datetime import date
+      from time import sleep
+
+      import sys
+      import os
+      from time import sleep
+
+
+
+
+
+
+      def result(req):
+
+       import json
+
+       stat=int(req.status)
+
+
+
+       if(stat!=200):
+        document['joke'].text = "Please enter correct data"
+
+       data = json.loads(req.responseText)
+
+       Age=19
+
+       Age=document['age_2'].value
+       document['joke'].text = Age
+
+       centers = data['centers']
+       result2 = []
+       result=[]
+
+       coun=(len(centers))
+
+
+
+       for st1 in range(coun):
+             console.log(st1)
+
+             center=centers[st1]
+             center_name = center['name']
+             centre_pincode = center['pincode']
+             district_name = center['district_name']
+             block_name = center['block_name']
+             centre_fee = center['fee_type']
+             sessions = center['sessions']
+
+             result.append(center_name)
+
+             document['joke'].text=result
+
+             temp_result=[]
+
+
+             for session in sessions:
+                     available_capacity = int(session['available_capacity'])
+                     if available_capacity == 0:
+                               continue
+
+
+                     session_age = int(session['min_age_limit'])
+
+
+
+                     result.append(available_capacity)
+
+                     if(int(session_age)<int(Age)):
+                      result.append(session_age)
+
+                     session_date = session['date']
+                     session_vaccine = session['vaccine']
+
+                     if session_vaccine == '':
+                               session_vaccine = 'unknown'
+
+
+                     if(int(session_age)<int(Age)):
+                      row = (available_capacity, session_age,
+                                session_date, session_vaccine)
+                      temp_result.append(row)
+             if temp_result != []:
+                         address = (center_name, centre_pincode,
+                                    district_name, block_name, centre_fee)
+                         row = (address, temp_result)
+                         result2.append(row)
+
+
+       if result2 == []:
+               document['joke'].text = "Sorry no slots Available"
+       else :
+
+              str="CENTER DETAILS\n"
+              str1=""
+              for row in result2:
+               address = row[0]
+               sessions = row[1]
+               str2="Center Name - {}\nCenter Pin Code - {}\nDistrict - {}\nBlock - {}\nCentre Fee - {}\n".format(*address)
+               str3="Printing Sessions for this center:\n"
+               for session in sessions:
+                 str4="For"+session[2]+"\t"
+                 str5="{} doses available with minimum age {} and vaccine {}".format(
+                          session[0], session[1], session[3])+"\n"
+                 str1=str1+str2+str3+str4+str5+"\n"
+
+              document['joke'].text = str+"\n"+str1+"\n"
+
+
+              global _timer2
+              timer.clear_interval(_timer2)
+
+
+
+              document['p2'].play()
+
+
+
+
+
+
+
+
+
+      def District(req):
+        import json
+
+        stat=int(req.status)
+
+
+
+        if(stat!=200):
+         document['joke'].text = "Please enter correct data"
+
+
+        data = json.loads(req.responseText)
+
+
+        district_name=document['district'].value
+
+        list=data['districts']
+
+        dis_code=-1
+
+        for ls in list:
+         if(ls['district_name'].lower()==district_name.lower()):
+          dis_code=ls['district_id']
+          break
+
+
+
+        console.log(dis_code)
+
+        if(dis_code==-1):
+         document['joke'].text="Pls enter correct District name"
+         document['joke'].text = "Pls enter correct district name"
+         console.log("hello end here")
+
+
+
+        if(dis_code!=-1):
+         today = date.today()
+
+         cowin_date = "{}-{}-{}".format(today.day, today.month, today.year)
+
+
+
+         url_dis="https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?"
+
+
+
+         t1="district_id="+str(dis_code)+"&date="+cowin_date
+
+         url_dis=url_dis+""+t1
+
+         console.log(url_dis)
+
+         req2 = ajax.ajax()
+         req2.open('GET', url_dis, True)
+         req2.bind('complete', result)
+         document['joke'].text = 'Loading...'
+         req2.send()
+
+
+
+
+
+      def show_city():
+        city=document['city'].value
+        district=document['district'].value
+        today = date.today()
+        cowin_date = "{}-{}-{}".format(today.day, today.month, today.year)
+
+
+
+        states=[{"state_id":1,"state_name":"Andaman and Nicobar Islands"},{"state_id":2,"state_name":"Andhra Pradesh"},{"state_id":3,"state_name":"Arunachal Pradesh"},{"state_id":4,"state_name":"Assam"},{"state_id":5,"state_name":"Bihar"},{"state_id":6,"state_name":"Chandigarh"},{"state_id":7,"state_name":"Chhattisgarh"},{"state_id":8,"state_name":"Dadra and Nagar Haveli"},{"state_id":37,"state_name":"Daman and Diu"},{"state_id":9,"state_name":"Delhi"},{"state_id":10,"state_name":"Goa"},{"state_id":11,"state_name":"Gujarat"},{"state_id":12,"state_name":"Haryana"},{"state_id":13,"state_name":"Himachal Pradesh"},{"state_id":14,"state_name":"Jammu and Kashmir"},{"state_id":15,"state_name":"Jharkhand"},{"state_id":16,"state_name":"Karnataka"},{"state_id":17,"state_name":"Kerala"},{"state_id":18,"state_name":"Ladakh"},{"state_id":19,"state_name":"Lakshadweep"},{"state_id":20,"state_name":"Madhya Pradesh"},{"state_id":21,"state_name":"Maharashtra"},{"state_id":22,"state_name":"Manipur"},{"state_id":23,"state_name":"Meghalaya"},{"state_id":24,"state_name":"Mizoram"},{"state_id":25,"state_name":"Nagaland"},{"state_id":26,"state_name":"Odisha"},{"state_id":27,"state_name":"Puducherry"},{"state_id":28,"state_name":"Punjab"},{"state_id":29,"state_name":"Rajasthan"},{"state_id":30,"state_name":"Sikkim"},{"state_id":31,"state_name":"Tamil Nadu"},{"state_id":32,"state_name":"Telangana"},{"state_id":33,"state_name":"Tripura"},{"state_id":34,"state_name":"Uttar Pradesh"},{"state_id":35,"state_name":"Uttarakhand"},{"state_id":36,"state_name":"West Bengal"}]
+
+
+        state_num=-1
+
+        for st in states:
+          if(st['state_name'].lower()==city.lower()):
+            state_num=int(st['state_id'])
+            break
+
+        if(state_num==-1):
+         document['joke'].text="Pls enter correct city name"
+         global _timer2
+         timer.clear_interval(_timer2)
+
+
+
+        console.log(state_num)
+
+        dis="https://cdn-api.co-vin.in/api/v2/admin/location/districts/"
+        dis=dis+""+str(state_num)
+
+        console.log(dis)
+
+        req1 = ajax.ajax()
+        req1.open('GET', dis, True)
+        req1.bind('complete', District)
+        document['joke'].text = 'Loading...'
+        req1.send()
+
+
+
+
+
+
+      def city_s1(e):
+
+        global _timer2
+        show_city()
+
+        _timer2 = timer.set_interval(show_city,100000)
+        show_city()
+
+
+      def citys1t(e):
+
+        global _timer2
+        timer.clear_interval(_timer2)
+
+        console.log("hello2")
+
+
+
+
+
+
+      document['city_s'].bind('click', city_s1)
+      document['city_st'].bind('click', citys1t)
+      </script>
+
+
+
+</body>
+
+
+</html>
