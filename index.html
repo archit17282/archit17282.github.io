@@ -20,7 +20,7 @@
   <audio
            id="p2"
 
-           src="https://soundbible.com/mp3/Tyrannosaurus%20Rex%20Roar-SoundBible.com-807702404.mp3">
+           src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3">
 
 
       Your browser does not support the <code>audio</code> element.
@@ -46,8 +46,8 @@
  <br>
  <br>
 
-<h2 id="hello2">Search with City and District_name </h2>
- <input type="text" id="city" placeholder="State">
+<h2 id="hello2">Search with State and District name </h2>
+ <input type="text" id="city" placeholder="City">
  <input type="text" id="district" placeholder="District_Name">
  <input type="number" id="age_2" placeholder="Age">
  <button id="city_s" type="button" name="button"> Search </button>
@@ -71,12 +71,12 @@
 
 
 
-        from datetime import date
-        from time import sleep
+        from datetime import date,datetime
+
 
         import sys
         import os
-        from time import sleep
+
 
 
 
@@ -167,7 +167,9 @@
 
 
             if result2 == []:
-                    document['joke'].text = "Sorry no slots Available"
+                    ti=(datetime.now().strftime("%H:%M:%S"))
+                    console.log(ti)
+                    document['joke'].text = "Sorry no slots Available\nChecked At time: "+(ti)+"\nWill check again in 50 seconds"
             else :
 
                    str="CENTER DETAILS\n"
@@ -237,12 +239,13 @@
           global _timer
           show()
 
-          _timer = timer.set_interval(show,100000)
+          _timer = timer.set_interval(show,50000)
 
 
         def curr2(e):
           global _timer
           timer.clear_interval(_timer)
+          document['joke'].text="Script Stopped , Click search to start again"
 
 
 
@@ -274,12 +277,12 @@
 
       from browser import document, console, alert,timer
       from browser import  ajax
-      from datetime import date
-      from time import sleep
+      from datetime import date,datetime
+
 
       import sys
       import os
-      from time import sleep
+
 
 
 
@@ -364,7 +367,10 @@
 
 
        if result2 == []:
-               document['joke'].text = "Sorry no slots Available"
+               ti=(datetime.now().strftime("%H:%M:%S"))
+               console.log(ti)
+               document['joke'].text = "Sorry no slots Available\nChecked At time: "+(ti)+"\nWill check again in 50 seconds"
+
        else :
 
               str="CENTER DETAILS\n"
@@ -480,7 +486,7 @@
             break
 
         if(state_num==-1):
-         document['joke'].text="Pls enter correct city name"
+         document['joke'].text="Pls enter correct State name"
          global _timer2
          timer.clear_interval(_timer2)
 
@@ -509,7 +515,7 @@
         global _timer2
         show_city()
 
-        _timer2 = timer.set_interval(show_city,100000)
+        _timer2 = timer.set_interval(show_city,50000)
         show_city()
 
 
@@ -517,6 +523,8 @@
 
         global _timer2
         timer.clear_interval(_timer2)
+
+        document['joke'].text="Script Stopped , Click search to start again"
 
         console.log("hello2")
 
