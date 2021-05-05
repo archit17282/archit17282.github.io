@@ -2,7 +2,7 @@
 
 
  
-Vaccine Slots Browser Script Written in Python and Html 
+#Vaccine Slots Browser Script Written in Python and Html 
 
 What it Provides :-
 Two options Available to start the script to search for Slots 
