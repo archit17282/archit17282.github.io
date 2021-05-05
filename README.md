@@ -4,6 +4,9 @@
  
 # Vaccine Slots Browser Script Written in Python and Html 
 
+## Link :-
+https://archit17282.github.io/
+
 ## What it Provides :-
 Two options Available to start the script to search for Slots 
 
