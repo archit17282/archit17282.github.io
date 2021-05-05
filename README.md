@@ -18,4 +18,4 @@ Two options Available to start the script to search for Slots
 
 ## Future Plans :-
 
-To add vaccine prefernce, functionality to add multiple pincodes, districs and state/districs suggestions instead of writing them .
+To add vaccine prefence, functionality to add multiple pincodes, districs and state/districs suggestions instead of writing them .
